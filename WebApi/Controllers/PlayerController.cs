@@ -17,11 +17,7 @@ namespace WebApi.Controllers
             new PlayerModel{ Id = 4, FirstName = "Paul", LastName = "George", AllStar = true },
             new PlayerModel{ Id = 5, FirstName = "Pascal", LastName = "Siacam", AllStar = false },
         };
-        //players.Add(PlayerModel () { ID = 1, FirstName = "LeBron", LastName = "James", AllStar = true });
-        //players.Add(new Player { ID = 2, FirstName = "Stephen", LastName = "Curry", AllStar = true });
-        //players.Add(new Player { ID = 3, FirstName = "Kevin", LastName = "Durant", AllStar = true });
-        //players.Add(new Player { ID = 4, FirstName = "Giannis", LastName = "Antetokounmpo", AllStar = true });
-        //players.Add(new Player { ID = 5, FirstName = "Kawhi", LastName = "Leonard", AllStar = true });
+       
 
 // GET api/<controller>
         public List<PlayerModel> Get()
@@ -38,17 +34,34 @@ namespace WebApi.Controllers
         // POST api/<controller>
         public void Post( PlayerModel player)
         {
-           //nastavljam doma
+            int maxId = players.Max(p => p.Id);
+            player.Id = maxId + 1;
+            players.Add(player);
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, PlayerModel updatePlayer)
         {
+            //Player model istanciram u novi objekt i tražim mu ID koji ću u konačnici korisiti za update
+            PlayerModel playerToUpdate = players.FirstOrDefault(p => p.Id == id);
+            if (playerToUpdate != null)
+            {
+                playerToUpdate.FirstName = updatePlayer.FirstName;
+                playerToUpdate.LastName = updatePlayer.LastName;
+                playerToUpdate.AllStar = updatePlayer.AllStar;
+            }
         }
 
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
+            //isti princip ko na gornjem primjeru
+            PlayerModel playerToDelete = players.Select(P => P.Id == id);
+            //metoda brisanja
+            if (playerToDelete != null)
+            { 
+             players.Remove(playerToDelete);
+            }
         }
     }
 }
