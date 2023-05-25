@@ -21,16 +21,23 @@ namespace WebApi.Controllers
         //Pisano za još jedan commit da se vidi branch
 
         // GET api/<controller>
-        public HttpResponseMessage List<PlayerModel> Get()
+        public HttpResponseMessage Get()
         {
-            return Request.CreateResponse(HttpResponseMessage, Ok, players);
+            return Request.CreateResponse(HttpResponseMessage.Created, players);
         }
 
         // GET api/<controller>/5
-        public List<PlayerModel> Get(int id )
+        public HttpResponseMessage Get(int id)
         {
-            int PlayerId = players.IndexOf(players[id]);
-            return PlayerId ;
+            PlayerModel player = players.FirstOrDefault(p => p.Id == id);
+            if (player != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.Created, player);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");
+            }
         }
 
         // POST api/<controller>
@@ -54,7 +61,7 @@ namespace WebApi.Controllers
                 playerToUpdate.FirstName = updatePlayer.FirstName;
                 playerToUpdate.LastName = updatePlayer.LastName;
                 playerToUpdate.AllStar = updatePlayer.AllStar;
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponse(HttpStatusCode.OK, players);
             }
             else
             {
@@ -66,12 +73,12 @@ namespace WebApi.Controllers
         public HttpResponseMessage Delete(int id)
         {
             //isti princip ko na gornjem primjeru
-            PlayerModel playerToDelete = players.Select(P => P.Id == id);
+            PlayerModel playerToDelete = players.FirstOrDefault(p => p.Id == id);
             //metoda brisanja
             if (playerToDelete != null)
-            { 
-             players.Remove(playerToDelete);
-                return Request.CreateResponse(HttpStatusCode.ok, playerToDelete);
+            {
+                players.Remove(playerToDelete);
+                return Request.CreateResponse(HttpStatusCode.Created, playerToDelete);
             }
             else
             {
