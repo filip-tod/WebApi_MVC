@@ -18,6 +18,7 @@ namespace WebApi.Controllers
             new PlayerModel{ Id = 5, FirstName = "Pascal", LastName = "Siacam", AllStar = false },
         };
         //!TASK! :Editat svaku od metoda sa provjerama za ulazne parametre i ubacivanje HttpResponseMessage
+        //Pisano za još jedan commit da se vidi branch
 
         // GET api/<controller>
         public HttpResponseMessage List<PlayerModel> Get()
