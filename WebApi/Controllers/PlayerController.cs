@@ -17,30 +17,34 @@ namespace WebApi.Controllers
             new PlayerModel{ Id = 4, FirstName = "Paul", LastName = "George", AllStar = true },
             new PlayerModel{ Id = 5, FirstName = "Pascal", LastName = "Siacam", AllStar = false },
         };
-       
+        //!TASK! :Editat svaku od metoda sa provjerama za ulazne parametre i ubacivanje HttpResponseMessage
 
-// GET api/<controller>
-        public List<PlayerModel> Get()
+        // GET api/<controller>
+        public HttpResponseMessage List<PlayerModel> Get()
         {
-            return players;
+            return Request.CreateResponse(HttpResponseMessage, Ok, players);
         }
 
         // GET api/<controller>/5
         public List<PlayerModel> Get(int id )
         {
-            return players;
+            int PlayerId = players.IndexOf(players[id]);
+            return PlayerId ;
         }
 
         // POST api/<controller>
-        public void Post( PlayerModel player)
+        //
+        public HttpResponseMessage Post( PlayerModel player)
         {
-            int maxId = players.Max(p => p.Id);
+            int maxId = players.Max(c => c.Id);
             player.Id = maxId + 1;
             players.Add(player);
+
+            return Request.CreateResponse(HttpStatusCode.Created, player);
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, PlayerModel updatePlayer)
+        public HttpResponseMessage Put(int id, PlayerModel updatePlayer)
         {
             //Player model istanciram u novi objekt i tražim mu ID koji ću u konačnici korisiti za update
             PlayerModel playerToUpdate = players.FirstOrDefault(p => p.Id == id);
@@ -49,11 +53,16 @@ namespace WebApi.Controllers
                 playerToUpdate.FirstName = updatePlayer.FirstName;
                 playerToUpdate.LastName = updatePlayer.LastName;
                 playerToUpdate.AllStar = updatePlayer.AllStar;
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");
             }
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public HttpResponseMessage Delete(int id)
         {
             //isti princip ko na gornjem primjeru
             PlayerModel playerToDelete = players.Select(P => P.Id == id);
@@ -61,6 +70,11 @@ namespace WebApi.Controllers
             if (playerToDelete != null)
             { 
              players.Remove(playerToDelete);
+                return Request.CreateResponse(HttpStatusCode.ok, playerToDelete);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player not found");
             }
         }
     }
