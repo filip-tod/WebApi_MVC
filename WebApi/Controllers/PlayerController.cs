@@ -57,6 +57,7 @@ namespace WebApi.Controllers
         {
             //isti princip ko na gornjem primjeru
             PlayerModel playerToDelete = players.Select(P => P.Id == id);
+            //metoda brisanja
             if (playerToDelete != null)
             { 
              players.Remove(playerToDelete);
