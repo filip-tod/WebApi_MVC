@@ -9,7 +9,7 @@ namespace WebApi.Controllers
 {
     public class PlayerController : ApiController
     {
-        List<PlayerModel> players = new List<PlayerModel>
+         static List<PlayerModel> players = new List<PlayerModel>
         {
             new PlayerModel{ Id = 1, FirstName = "LeBron", LastName = "James", AllStar = true },
             new PlayerModel{ Id = 2, FirstName = "Khawi", LastName = "Leonard", AllStar = false },
@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         // GET api/<controller>
         public HttpResponseMessage Get()
         {
-            return Request.CreateResponse(HttpResponseMessage.Created, players);
+            return Request.CreateResponse(HttpStatusCode.OK, players);
         }
 
         // GET api/<controller>/5
@@ -32,12 +32,9 @@ namespace WebApi.Controllers
             PlayerModel player = players.FirstOrDefault(p => p.Id == id);
             if (player != null)
             {
-                return Request.CreateResponse(HttpStatusCode.Created, player);
-            }
-            else
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");
-            }
+                return Request.CreateResponse(HttpStatusCode.OK, player);
+            } 
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");  
         }
 
         // POST api/<controller>
@@ -47,8 +44,12 @@ namespace WebApi.Controllers
             int maxId = players.Max(c => c.Id);
             player.Id = maxId + 1;
             players.Add(player);
-
-            return Request.CreateResponse(HttpStatusCode.Created, player);
+            if(player.Id > maxId)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, player);
+            }
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Player dose not match");
+           
         }
 
         // PUT api/<controller>/5
@@ -63,10 +64,7 @@ namespace WebApi.Controllers
                 playerToUpdate.AllStar = updatePlayer.AllStar;
                 return Request.CreateResponse(HttpStatusCode.OK, players);
             }
-            else
-            {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");
-            }
         }
 
         // DELETE api/<controller>/5
@@ -78,12 +76,9 @@ namespace WebApi.Controllers
             if (playerToDelete != null)
             {
                 players.Remove(playerToDelete);
-                return Request.CreateResponse(HttpStatusCode.Created, playerToDelete);
+                return Request.CreateResponse(HttpStatusCode.OK, playerToDelete);
             }
-            else
-            {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player not found");
-            }
         }
     }
 }
