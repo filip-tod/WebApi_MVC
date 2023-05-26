@@ -9,7 +9,7 @@ namespace WebApi.Controllers
 {
     public class PlayerController : ApiController
     {
-        List<PlayerModel> players = new List<PlayerModel>
+         static List<PlayerModel> players = new List<PlayerModel>
         {
             new PlayerModel{ Id = 1, FirstName = "LeBron", LastName = "James", AllStar = true },
             new PlayerModel{ Id = 2, FirstName = "Khawi", LastName = "Leonard", AllStar = false },
@@ -21,16 +21,20 @@ namespace WebApi.Controllers
         //Pisano za još jedan commit da se vidi branch
 
         // GET api/<controller>
-        public HttpResponseMessage List<PlayerModel> Get()
+        public HttpResponseMessage Get()
         {
-            return Request.CreateResponse(HttpResponseMessage, Ok, players);
+            return Request.CreateResponse(HttpStatusCode.OK, players);
         }
 
         // GET api/<controller>/5
-        public List<PlayerModel> Get(int id )
+        public HttpResponseMessage Get(int id)
         {
-            int PlayerId = players.IndexOf(players[id]);
-            return PlayerId ;
+            PlayerModel player = players.FirstOrDefault(p => p.Id == id);
+            if (player != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, player);
+            } 
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");  
         }
 
         // POST api/<controller>
@@ -40,8 +44,12 @@ namespace WebApi.Controllers
             int maxId = players.Max(c => c.Id);
             player.Id = maxId + 1;
             players.Add(player);
-
-            return Request.CreateResponse(HttpStatusCode.Created, player);
+            if(player.Id > maxId)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, player);
+            }
+                return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Player dose not match");
+           
         }
 
         // PUT api/<controller>/5
@@ -54,29 +62,23 @@ namespace WebApi.Controllers
                 playerToUpdate.FirstName = updatePlayer.FirstName;
                 playerToUpdate.LastName = updatePlayer.LastName;
                 playerToUpdate.AllStar = updatePlayer.AllStar;
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponse(HttpStatusCode.OK, players);
             }
-            else
-            {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player was not found.");
-            }
         }
 
         // DELETE api/<controller>/5
         public HttpResponseMessage Delete(int id)
         {
             //isti princip ko na gornjem primjeru
-            PlayerModel playerToDelete = players.Select(P => P.Id == id);
+            PlayerModel playerToDelete = players.FirstOrDefault(p => p.Id == id);
             //metoda brisanja
             if (playerToDelete != null)
-            { 
-             players.Remove(playerToDelete);
-                return Request.CreateResponse(HttpStatusCode.ok, playerToDelete);
-            }
-            else
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player not found");
+                players.Remove(playerToDelete);
+                return Request.CreateResponse(HttpStatusCode.OK, playerToDelete);
             }
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Player not found");
         }
     }
 }
