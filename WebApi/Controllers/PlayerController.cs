@@ -9,6 +9,9 @@ namespace WebApi.Controllers
 {
     public class PlayerController : ApiController
     {
+        //static string connectionString = new connectionString("");
+
+
          static List<PlayerModel> players = new List<PlayerModel>
         {
             new PlayerModel{ Id = 1, FirstName = "LeBron", LastName = "James", AllStar = true },
@@ -27,10 +30,13 @@ namespace WebApi.Controllers
         }
 
         // GET api/<controller>/5
-        public HttpResponseMessage Get(int id)
+        //getelementbyid umjesto get
+        public HttpResponseMessage  Get(int id)
+           // select form where "\id=\@id"
+           //na get exetuce reader
         {
             PlayerModel player = players.FirstOrDefault(p => p.Id == id);
-            if (player != null)
+            if (player != null)  //if (reader.hasrows();)
             {
                 return Request.CreateResponse(HttpStatusCode.OK, player);
             } 
@@ -40,6 +46,7 @@ namespace WebApi.Controllers
         // POST api/<controller>
         //
         public HttpResponseMessage Post( PlayerModel player)
+            //nA POSTU executenoquery
         {
             int maxId = players.Max(c => c.Id);
             player.Id = maxId + 1;
