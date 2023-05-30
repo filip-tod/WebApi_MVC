@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace player_api.Controllers
+namespace WebApi.Controllers
 {
     public class HomeController : Controller
     {
