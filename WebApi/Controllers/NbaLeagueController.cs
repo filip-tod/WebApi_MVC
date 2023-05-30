@@ -6,7 +6,7 @@ using Npgsql;
 using System.Data.SqlClient;
 using player_api.Models;
 
-namespace player_api.Controllers
+namespace WebApi.Controllers
 {
     public class NbaLeagueController : ApiController
     {
