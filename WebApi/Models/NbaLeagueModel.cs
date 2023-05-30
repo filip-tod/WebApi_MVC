@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace WebApi.Controllers
+namespace WebApi.Models
 {
     public class NbaLeagueModel
     {
