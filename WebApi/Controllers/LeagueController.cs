@@ -10,7 +10,7 @@ namespace BackUp_MVC.Controllers
     public class LeagueController : ApiController
     {
       private  static readonly string connectionString = "Server=localhost;Port=5432;User Id=postgres;Password=root;Database=playerdb;";
-        //bildabilno i radi  --> moram još provjere napraviti
+        //bildabilno i radi 
         public HttpResponseMessage Get()
         {
             List<object> nbaLeagues = new List<object>();
@@ -39,7 +39,7 @@ namespace BackUp_MVC.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, nbaLeagues);
         }
-        //bildabilno i radi --> moram još provjere napraviti
+        //bildabilno i radi 
         public HttpResponseMessage GetElementById(int id)
             {
                 using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
@@ -67,9 +67,13 @@ namespace BackUp_MVC.Controllers
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-        // bildabilno i radi --> moram još provjere napraviti
+        // bildabilno i radi 
         public HttpResponseMessage Post(LeagueModel leagueData)
         {
+            if (string.IsNullOrWhiteSpace(leagueData.Division) || string.IsNullOrWhiteSpace(leagueData.Commissioner))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Division and Commissioner fields are required!!!");
+            }
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
@@ -89,6 +93,10 @@ namespace BackUp_MVC.Controllers
         //bildabilno i valja --> moram još provjere napraviti
         public HttpResponseMessage Put(int id, LeagueModel leaguedata)
         {
+            if (string.IsNullOrWhiteSpace(leaguedata.Division) || string.IsNullOrWhiteSpace(leaguedata.Commissioner))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Division and Commissioner fields are required!!!");
+            }
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
@@ -104,7 +112,7 @@ namespace BackUp_MVC.Controllers
             }
                 return Request.CreateResponse(HttpStatusCode.Created, "you have inserted data successfully!");
         }
-        // osim što nemogu zatvoriti konekciju radi i bildabilno je
+        // osim što nemogu zatvoriti konekciju radi i bildabilno je 
         public HttpResponseMessage Delete(int id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
@@ -126,13 +134,9 @@ namespace BackUp_MVC.Controllers
                     {
                         return Request.CreateResponse(HttpStatusCode.NotFound);
                     }
-
                 }
                // connection.Close();  --> javlja grešku
-               
             }
-
-
         }
 
     }
