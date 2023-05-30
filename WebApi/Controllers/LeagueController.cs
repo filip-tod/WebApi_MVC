@@ -114,7 +114,7 @@ namespace WebApi.Controllers
         }
         // osim što nemogu zatvoriti konekciju radi i bildabilno je 
         public HttpResponseMessage Delete(int id)
-        {
+        { 
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
