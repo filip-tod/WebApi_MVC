@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace BackUp_MVC.Controllers
+namespace player_api.Controllers
 {
     public class ValuesController : ApiController
     {
