@@ -5,7 +5,7 @@ using System.Net;
 using System.Web.Http;
 using BackUp_MVC.Models;
 
-namespace BackUp_MVC.Controllers
+namespace WebApi.Controllers
 {
     public class LeagueController : ApiController
     {

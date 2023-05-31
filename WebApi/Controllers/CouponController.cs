@@ -10,7 +10,7 @@ using BackUp_MVC.Models;
 using Microsoft.Ajax.Utilities;
 using System.Web.Helpers;
 
-namespace BackUp_MVC.Controllers
+namespace WebApi.Controllers
 {
     public class CouponController : ApiController
     {
