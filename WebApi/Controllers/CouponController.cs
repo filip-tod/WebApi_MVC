@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using BackUp_MVC.Models;
 using Microsoft.Ajax.Utilities;
+using System.Web.Helpers;
 
 namespace WebApi.Controllers
 {
@@ -18,27 +19,37 @@ namespace WebApi.Controllers
         //Bildabilno i radi
         public HttpResponseMessage Get()
         {
-            List<object> coupon = new List<object>();
+            List<CouponUsersModel> coupon = new List<CouponUsersModel>();
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 {
-                    string query = $"SELECT  * FROM coupon";
+                    string query = $"select a.pricediscount , a.couponvalidation, a.expiredate, b.nameuser , b.lastnameuser , b.email  from coupon a inner join users b on a.fk_coupon_users  = b.id  ";
                     using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                     {
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                int Id = reader.GetInt32(reader.GetOrdinal("id"));
+                               
                                 int Pricediscount = reader.GetInt32(reader.GetOrdinal("pricediscount"));
                                 bool Couponvalidation = reader.GetBoolean(reader.GetOrdinal("couponvalidation"));
                                 DateTime Expiredate = reader.GetDateTime(reader.GetOrdinal("expiredate"));
-                                long Fk_coupon_users = reader.GetInt64(reader.GetOrdinal("fk_coupon_users"));
+                                string NameUser = reader.GetString(reader.GetOrdinal("nameuser"));
+                                string LastNameUser = reader.GetString(reader.GetOrdinal("lastnameuser"));
+                                string Email = reader.GetString(reader.GetOrdinal("email"));
 
 
-                                var newCoupon = new { id = Id, pricediscount = Pricediscount, couponvalidation = Couponvalidation, expiredate = Expiredate, fk_coupon_users = Fk_coupon_users };
-                                coupon.Add(newCoupon);
+                                var newCoupon = new CouponUsersModel
+                                {
+                                    PriceDiscount = Pricediscount,
+                                    CouponValidation = Couponvalidation,
+                                    ExpireDate = Expiredate,
+                                    NameUser = NameUser,
+                                    LastNameUser = LastNameUser,
+                                    Email = Email
+
+                                };
                             }
                         }
                     }
@@ -92,10 +103,10 @@ namespace WebApi.Controllers
                 string query = "INSERT INTO coupon  (pricediscount, couponvalidation, expiredate, fk_coupon_users) VALUES (@pricediscount, @couponvalidation, @expiredate, @fk_coupon_users)";
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@pricediscount", couponData.pricediscount);
-                    command.Parameters.AddWithValue("@couponvalidation", couponData.couponvalidation);
-                    command.Parameters.AddWithValue("@expiredate", couponData.expiredate);
-                    command.Parameters.AddWithValue("@fk_coupon_users", couponData.fk_coupon_users);
+                    command.Parameters.AddWithValue("@pricediscount", couponData.Pricediscount);
+                    command.Parameters.AddWithValue("@couponvalidation", couponData.Couponvalidation);
+                    command.Parameters.AddWithValue("@expiredate", couponData.Expiredate);
+                    command.Parameters.AddWithValue("@fk_coupon_users", couponData.Fk_coupon_users);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();
@@ -112,14 +123,56 @@ namespace WebApi.Controllers
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
-                string query = "UPDATE coupon SET pricediscount = @pricediscount, couponvalidation = @couponvalidation, expiredate =@expiredate, fk_coupon_users = @fk_coupon_users WHERE id = @id";
+                string query = "UPDATE coupon SET ";
+                List<string> updateFields = new List<string>();
+
+                if (coupon.Pricediscount != 0)
+                {
+                    updateFields.Add("pricediscount = @pricediscount");
+                }
+
+                if (coupon.Couponvalidation != false)
+                {
+                    updateFields.Add("couponvalidation = @couponvalidation");
+                }
+
+                if (coupon.Expiredate != null)
+                {
+                    updateFields.Add("expiredate = @expiredate");
+                }
+
+                if (coupon.Fk_coupon_users != 0)
+                {
+                    updateFields.Add("fk_coupon_users = @fk_coupon_users");
+                }
+
+                query += string.Join(", ", updateFields);
+                query += " WHERE id = @id";
+
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@id", id);
 
-                    command.Parameters.AddWithValue("@pricediscount", coupon.pricediscount);
-                    command.Parameters.AddWithValue("@couponvalidation", coupon.couponvalidation);
-                    command.Parameters.AddWithValue("@expiredate", coupon.expiredate);
-                    command.Parameters.AddWithValue("@fk_coupon_users", coupon.fk_coupon_users);
+                    if (coupon.Pricediscount != 0)
+                    {
+                        command.Parameters.AddWithValue("@pricediscount", coupon.Pricediscount);
+                    }
+
+                    if (coupon.Couponvalidation != false)
+                    {
+                        command.Parameters.AddWithValue("@couponvalidation", coupon.Couponvalidation);
+                    }
+
+                    if (coupon.Expiredate != null)
+                    {
+                        command.Parameters.AddWithValue("@expiredate", coupon.Expiredate);
+                    }
+
+                    if (coupon.Fk_coupon_users != 0)
+                    {
+                        command.Parameters.AddWithValue("@fk_coupon_users", coupon.Fk_coupon_users);
+                    }
+
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

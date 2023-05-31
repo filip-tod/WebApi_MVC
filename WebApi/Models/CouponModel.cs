@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApi.Controllers
+namespace WebApi.Models
 {
     public class CouponModel
     {
