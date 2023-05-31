@@ -10,7 +10,7 @@ namespace WebApi.Controllers
     public class LeagueController : ApiController
     {
       private  static readonly string connectionString = "Server=localhost;Port=5432;User Id=postgres;Password=root;Database=playerdb;";
-        //bildabilno i radi sa joinom 
+        
         public HttpResponseMessage Get()
         {
             List<LeagueTeamModel> leagueTeams = new List<LeagueTeamModel>();
@@ -49,7 +49,7 @@ namespace WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, leagueTeams);
         }
-        //bildabilno i radi 
+       
         public HttpResponseMessage GetElementById(int id)
             {
                 using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
@@ -78,7 +78,8 @@ namespace WebApi.Controllers
                 }
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-        // bildabilno i radi 
+            
+       
         public HttpResponseMessage Post(LeagueModel leagueData)
         {
             if (string.IsNullOrWhiteSpace(leagueData.Division) || string.IsNullOrWhiteSpace(leagueData.Commissioner))
@@ -101,7 +102,6 @@ namespace WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.Created, "you have inserted data successfully!");
         }
 
-        //bildabilno i valja --> moram još provjere napraviti
         public HttpResponseMessage Put(int id, LeagueModel leaguedata)
         {
             if (string.IsNullOrWhiteSpace(leaguedata.Division) || string.IsNullOrWhiteSpace(leaguedata.Commissioner))
@@ -151,7 +151,7 @@ namespace WebApi.Controllers
             }
                 return Request.CreateResponse(HttpStatusCode.Created, "you have inserted data successfully!");
         }
-        // osim što nemogu zatvoriti konekciju radi i bildabilno je 
+
         public HttpResponseMessage Delete(int id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))

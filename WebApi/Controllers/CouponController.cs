@@ -16,7 +16,7 @@ namespace WebApi.Controllers
     {
         private static readonly string connectionString = "Server=localhost;Port=5432;User Id=postgres;Password=root;Database=playerdb;";
 
-        //Bildabilno i radi
+
         public HttpResponseMessage Get()
         {
             List<CouponUsersModel> coupon = new List<CouponUsersModel>();
@@ -59,7 +59,7 @@ namespace WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, coupon);
         }
-        // bildabilno i radi
+ 
         public HttpResponseMessage GetElementById(int id)
         {
             List<CouponUsersModel> coupon = new List<CouponUsersModel>();
@@ -103,7 +103,7 @@ namespace WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.BadRequest);
         }
-        //bildabilno i radi
+        
         public HttpResponseMessage Post(CouponModel couponData)
         { 
             if (couponData == null)
@@ -127,7 +127,7 @@ namespace WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.Created, "you have inserted data successfully!");
         }
-        // bildabilno i radi
+      
         public HttpResponseMessage Put(int id, CouponModel coupon)
         {
             if (id == 0)
@@ -193,7 +193,7 @@ namespace WebApi.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.Created, "you have inserted data successfully!");
         }
-        //bildabilno i radi
+    
         public HttpResponseMessage Delete(int id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
