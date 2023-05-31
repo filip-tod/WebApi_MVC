@@ -10,7 +10,7 @@ using BackUp_MVC.Models;
 using Microsoft.Ajax.Utilities;
 using System.Web.Helpers;
 
-namespace WebApi.Controllers
+namespace BackUp_MVC.Controllers
 {
     public class CouponController : ApiController
     {
@@ -24,7 +24,7 @@ namespace WebApi.Controllers
             {
                 connection.Open();
                 {
-                    string query = $"select a.pricediscount , a.couponvalidation, a.expiredate, b.nameuser , b.lastnameuser , b.email  from coupon a inner join users b on a.fk_coupon_users  = b.id  ";
+                    string query = $"select a.pricediscount , a.couponvalidation, a.expiredate, b.nameuser , b.lastnameuser , b.email  FROM coupon a inner join users b on a.fk_coupon_users  = b.id  ";
                     using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                     {
                         using (NpgsqlDataReader reader = command.ExecuteReader())
@@ -50,6 +50,7 @@ namespace WebApi.Controllers
                                     Email = Email
 
                                 };
+                                coupon.Add(newCoupon);
                             }
                         }
                     }
@@ -61,10 +62,11 @@ namespace WebApi.Controllers
         // bildabilno i radi
         public HttpResponseMessage GetElementById(int id)
         {
+            List<CouponUsersModel> coupon = new List<CouponUsersModel>();
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
-                string query = $"SELECT * FROM coupon WHERE id = @id";
+                string query = $"SELECT a.pricediscount , a.couponvalidation, a.expiredate, b.nameuser , b.lastnameuser , b.email  FROM coupon a inner join users b on a.fk_coupon_users  = b.id  WHERE a.id = @id";
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -72,15 +74,27 @@ namespace WebApi.Controllers
                     {
                         if (reader.Read())
                         {
-                            int Id = reader.GetInt32(reader.GetOrdinal("id"));
+
                             int Pricediscount = reader.GetInt32(reader.GetOrdinal("pricediscount"));
                             bool Couponvalidation = reader.GetBoolean(reader.GetOrdinal("couponvalidation"));
                             DateTime Expiredate = reader.GetDateTime(reader.GetOrdinal("expiredate"));
-                            long Fk_coupon_users = reader.GetInt64(reader.GetOrdinal("fk_coupon_users"));
+                            string NameUser = reader.GetString(reader.GetOrdinal("nameuser"));
+                            string LastNameUser = reader.GetString(reader.GetOrdinal("lastnameuser"));
+                            string Email = reader.GetString(reader.GetOrdinal("email"));
 
-                            var couponById = new { Id = id, pricediscount = Pricediscount, couponvalidation = Couponvalidation,
-                                                       expiredate = Expiredate, fk_coupon_users = Fk_coupon_users};
-                            return Request.CreateResponse(HttpStatusCode.OK, couponById);
+
+                            var newCoupon = new CouponUsersModel
+                            {
+                                PriceDiscount = Pricediscount,
+                                CouponValidation = Couponvalidation,
+                                ExpireDate = Expiredate,
+                                NameUser = NameUser,
+                                LastNameUser = LastNameUser,
+                                Email = Email
+
+                            };
+                            coupon.Add(newCoupon);
+                            return Request.CreateResponse(HttpStatusCode.OK, coupon);
 
                         }
                     }
